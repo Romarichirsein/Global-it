@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ExternalLink, Filter } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../lib/utils';
 
@@ -8,40 +8,85 @@ type Project = {
   id: number;
   title: string;
   category: string;
+  description: string;
   image: string;
 };
 
 export default function Projects() {
   const { t } = useLanguage();
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('Tous');
 
-  const categories = ['All', 'Web', 'Mobile', 'UI/UX'];
+  const categories = ['Tous', 'Vidéo', 'Web', 'Réseau', 'Maintenance'];
 
   const projects: Project[] = [
-    { id: 1, title: 'Quantum Banking App', category: 'Mobile', image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1000' },
-    { id: 2, title: 'Luxury Real Estate Portal', category: 'Web', image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1000' },
-    { id: 3, title: 'BioTech Dashboard', category: 'UI/UX', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000' },
-    { id: 4, title: 'EcoTravel Companion', category: 'Mobile', image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=1000' },
-    { id: 5, title: 'Minimalist Portfolio', category: 'Web', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1000' },
-    { id: 6, title: 'Financial Analytics Tool', category: 'UI/UX', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000' },
+    {
+      id: 1,
+      title: 'Système de Vidéosurveillance — École',
+      category: 'Vidéo',
+      description: 'Installation complète de 16 caméras HD avec accès à distance pour une école primaire.',
+      image: '/service-video.png',
+    },
+    {
+      id: 2,
+      title: 'Site Web Vitrine — Boutique',
+      category: 'Web',
+      description: 'Création d\'un site web professionnel avec galerie de produits et formulaire de contact.',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1000',
+    },
+    {
+      id: 3,
+      title: 'Infrastructure Réseau — PME',
+      category: 'Réseau',
+      description: 'Déploiement d\'un réseau Wi-Fi professionnel couvrant 3 bâtiments avec 50 postes.',
+      image: '/service-network.png',
+    },
+    {
+      id: 4,
+      title: 'Maintenance Parc Informatique',
+      category: 'Maintenance',
+      description: 'Contrat de maintenance mensuelle pour 30 postes informatiques dans une entreprise.',
+      image: '/service-maintenance.png',
+    },
+    {
+      id: 5,
+      title: 'Application Mobile E-Commerce',
+      category: 'Web',
+      description: 'Développement d\'une application mobile de vente en ligne pour une boutique locale.',
+      image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1000',
+    },
+    {
+      id: 6,
+      title: 'Sécurité Résidentielle — Villa',
+      category: 'Vidéo',
+      description: 'Installation de 8 caméras IP avec enregistreur NVR pour une résidence privée.',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=1000',
+    },
   ];
 
-  const filteredProjects = filter === 'All' 
-    ? projects 
+  const filteredProjects = filter === 'Tous'
+    ? projects
     : projects.filter(p => p.category === filter);
 
   return (
-    <div className="pt-32 pb-32">
+    <div className="pt-24 pb-32">
+      {/* Header */}
       <section className="max-w-7xl mx-auto px-4 mb-20 text-center">
-        <motion.h1 
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 text-sky-400 text-[10px] font-black mb-6 uppercase tracking-[0.2em]"
+        >
+          Notre Portfolio
+        </motion.div>
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl md:text-7xl font-bold text-zinc-900 dark:text-white mb-8 tracking-tight"
+          className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-6 tracking-tighter"
         >
           {t('projects.title')}
         </motion.h1>
         <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
-          {t('projects.subtitle')}
+          Découvrez quelques-uns de nos projets réalisés avec succès pour nos clients.
         </p>
       </section>
 
@@ -54,12 +99,12 @@ export default function Projects() {
               onClick={() => setFilter(cat)}
               className={cn(
                 "px-8 py-3 rounded-full text-sm font-bold transition-all border",
-                filter === cat 
-                  ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/30" 
-                  : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-blue-600"
+                filter === cat
+                  ? "bg-sky-400 border-sky-400 text-slate-900 shadow-lg shadow-sky-400/30"
+                  : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-sky-400"
               )}
             >
-              {cat === 'All' ? t('projects.all') : cat}
+              {cat}
             </button>
           ))}
         </div>
@@ -67,11 +112,8 @@ export default function Projects() {
 
       {/* Projects Grid */}
       <section className="max-w-7xl mx-auto px-4">
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          <AnimatePresence mode='popLayout'>
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <AnimatePresence mode="popLayout">
             {filteredProjects.map((p) => (
               <motion.div
                 key={p.id}
@@ -79,23 +121,30 @@ export default function Projects() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
-                className="group relative h-[400px] rounded-[2.5rem] overflow-hidden shadow-xl"
+                transition={{ duration: 0.3 }}
+                className="group relative rounded-[2.5rem] overflow-hidden shadow-xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800"
               >
-                <img 
-                  src={p.image} 
-                  alt={p.title} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent opacity-80" />
-                
-                <div className="absolute bottom-0 left-0 w-full p-10 space-y-4">
-                  <div className="text-blue-500 font-bold text-xs uppercase tracking-widest">{p.category}</div>
-                  <h3 className="text-2xl font-bold text-white">{p.title}</h3>
-                  <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <ExternalLink className="w-5 h-5 text-zinc-900" />
-                  </button>
+                {/* Image */}
+                <div className="h-56 overflow-hidden">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
+                {/* Content */}
+                <div className="p-6">
+                  <div className="text-sky-400 font-black text-[10px] uppercase tracking-widest mb-2">{p.category}</div>
+                  <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-2">{p.title}</h3>
+                  <p className="text-zinc-500 dark:text-slate-400 text-sm leading-relaxed">{p.description}</p>
+                </div>
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-sky-400/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-center text-slate-900 p-8">
+                    <ExternalLink className="w-10 h-10 mx-auto mb-3" />
+                    <div className="font-black text-lg uppercase tracking-tight">{p.title}</div>
+                    <div className="text-sm mt-2 opacity-80">{p.category}</div>
+                  </div>
                 </div>
               </motion.div>
             ))}
