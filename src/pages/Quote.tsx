@@ -16,7 +16,7 @@ export default function Quote() {
     { icon: FileText, label: 'Branding' },
   ];
 
-  const budgets = ['< 5k€', '5k€ - 15k€', '15k€ - 50k€', '> 50k€'];
+  const budgets = ['< 100 000 FCFA', '100k - 500k FCFA', '500k - 2M FCFA', '> 2 000 000 FCFA'];
 
   if (submitted) {
     return (

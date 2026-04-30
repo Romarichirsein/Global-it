@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="Global IT" className="h-12 w-auto object-contain" />
+              <img src="/logo.png" alt="Global IT" className="h-16 w-auto object-contain" />
             </Link>
             <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed">
               {t('home.heroSubtitle')}
