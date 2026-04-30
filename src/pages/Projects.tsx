@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Filter, Layers } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { cn } from '../lib/utils';
+import { 
+  staggerContainer, 
+  fadeUpItem, 
+  fadeInItem,
+  usePageScrollProgress 
+} from '../lib/animations';
 
 type Project = {
   id: number;
@@ -15,6 +21,7 @@ type Project = {
 export default function Projects() {
   const { t } = useLanguage();
   const [filter, setFilter] = useState('Tous');
+  const scrollProgress = usePageScrollProgress();
 
   const categories = ['Tous', 'Vidéo', 'Web', 'Réseau', 'Maintenance'];
 
@@ -68,89 +75,158 @@ export default function Projects() {
     : projects.filter(p => p.category === filter);
 
   return (
-    <div className="pt-24 pb-32">
-      {/* Header */}
-      <section className="max-w-7xl mx-auto px-4 mb-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 text-sky-400 text-[10px] font-black mb-6 uppercase tracking-[0.2em]"
-        >
-          Notre Portfolio
-        </motion.div>
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-6 tracking-tighter"
-        >
-          {t('projects.title')}
-        </motion.h1>
-        <p className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
-          Découvrez quelques-uns de nos projets réalisés avec succès pour nos clients.
-        </p>
-      </section>
-
-      {/* Filter Tabs */}
-      <section className="max-w-7xl mx-auto px-4 mb-16">
-        <div className="flex flex-wrap justify-center gap-4">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={cn(
-                "px-8 py-3 rounded-full text-sm font-bold transition-all border",
-                filter === cat
-                  ? "bg-sky-400 border-sky-400 text-slate-900 shadow-lg shadow-sky-400/30"
-                  : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-sky-400"
-              )}
+    <>
+      <motion.div className="scroll-progress" style={{ scaleX: scrollProgress }} />
+      
+      <div className="pt-32 pb-32 overflow-hidden">
+        {/* Header */}
+        <section className="max-w-7xl mx-auto px-4 mb-20 text-center relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-sky-400/5 rounded-full blur-[100px] -z-10" />
+          
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="show"
+          >
+            <motion.div variants={fadeUpItem} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sky-400/30 bg-sky-400/10 text-sky-400 text-[10px] font-black mb-6 uppercase tracking-[0.2em]">
+              Notre Portfolio
+            </motion.div>
+            <motion.h1
+              variants={fadeUpItem}
+              className="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-6 tracking-tighter"
             >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </section>
+              {t('projects.title')}
+            </motion.h1>
+            <motion.div variants={fadeUpItem} className="section-line mb-6" />
+            <motion.p variants={fadeUpItem} className="text-xl text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+              Découvrez l'excellence technologique à travers nos réalisations marquantes au Cameroun.
+            </motion.p>
+          </motion.div>
+        </section>
 
-      {/* Projects Grid */}
-      <section className="max-w-7xl mx-auto px-4">
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((p) => (
-              <motion.div
-                key={p.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="group relative rounded-[2.5rem] overflow-hidden shadow-xl bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800"
+        {/* Filter Tabs */}
+        <section className="max-w-7xl mx-auto px-4 mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex flex-wrap justify-center gap-3"
+          >
+            {categories.map((cat, idx) => (
+              <motion.button
+                key={cat}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setFilter(cat)}
+                className={cn(
+                  "px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shadow-sm",
+                  filter === cat
+                    ? "bg-sky-400 border-sky-400 text-slate-900 shadow-xl shadow-sky-400/20"
+                    : "bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 text-zinc-500 dark:text-slate-400 hover:border-sky-400/50"
+                )}
               >
-                {/* Image */}
-                <div className="h-56 overflow-hidden">
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                </div>
-                {/* Content */}
-                <div className="p-6">
-                  <div className="text-sky-400 font-black text-[10px] uppercase tracking-widest mb-2">{p.category}</div>
-                  <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-2">{p.title}</h3>
-                  <p className="text-zinc-500 dark:text-slate-400 text-sm leading-relaxed">{p.description}</p>
-                </div>
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-sky-400/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="text-center text-slate-900 p-8">
-                    <ExternalLink className="w-10 h-10 mx-auto mb-3" />
-                    <div className="font-black text-lg uppercase tracking-tight">{p.title}</div>
-                    <div className="text-sm mt-2 opacity-80">{p.category}</div>
-                  </div>
-                </div>
-              </motion.div>
+                {cat}
+              </motion.button>
             ))}
-          </AnimatePresence>
-        </motion.div>
-      </section>
-    </div>
+          </motion.div>
+        </section>
+
+        {/* Projects Grid */}
+        <section className="max-w-7xl mx-auto px-4">
+          <motion.div 
+            layout 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((p, idx) => (
+                <motion.div
+                  key={p.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    ease: [0.16, 1, 0.3, 1],
+                    delay: idx * 0.05 
+                  }}
+                  className="group relative h-[450px] premium-card overflow-hidden"
+                >
+                  {/* Image with Parallax-like hover */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <motion.img
+                      src={p.image}
+                      alt={p.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90 group-hover:opacity-70 transition-opacity duration-500" />
+                  </div>
+                  
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 p-10 flex flex-col justify-end">
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      className="text-sky-400 font-black text-[10px] uppercase tracking-[0.2em] mb-3"
+                    >
+                      {p.category}
+                    </motion.div>
+                    <h3 className="text-2xl font-black text-white mb-3 tracking-tight group-hover:text-sky-400 transition-colors duration-300">
+                      {p.title}
+                    </h3>
+                    <p className="text-slate-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 line-clamp-2">
+                      {p.description}
+                    </p>
+                    
+                    <motion.div 
+                      className="mt-6 flex items-center gap-4 translate-y-8 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100"
+                    >
+                      <div className="w-12 h-12 bg-sky-400 rounded-full flex items-center justify-center text-slate-900 shadow-lg">
+                        <ExternalLink className="w-5 h-5" />
+                      </div>
+                      <span className="text-white text-[10px] font-black uppercase tracking-widest">Voir détails</span>
+                    </motion.div>
+                  </div>
+
+                  {/* Corner indicator */}
+                  <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-sky-400 group-hover:border-sky-400 transition-all duration-300">
+                    <Layers className="w-4 h-4 text-white group-hover:text-slate-900" />
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </section>
+
+        {/* Bottom Banner */}
+        <section className="mt-32 max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative bg-sky-400 rounded-[3rem] p-16 text-center overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+               <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[120%] bg-white rotate-12 blur-3xl animate-pulse" />
+            </div>
+            
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter mb-8 uppercase leading-tight relative z-10">
+              Vous avez un projet <br /> simillaire en tête ?
+            </h2>
+            
+            <div className="relative z-10">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/contact"
+                  className="bg-slate-900 text-white px-12 py-5 rounded-full text-xs font-black uppercase tracking-widest inline-flex items-center gap-3 shadow-2xl shadow-slate-900/20"
+                >
+                  Parlons-en maintenant <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+      </div>
+    </>
   );
 }
